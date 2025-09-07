@@ -13,12 +13,14 @@ class User extends Model
     {
         $pdo = Database::getInstance();
         $stmt = $pdo->prepare("
-            INSERT INTO users (full_name, birth_year, gender, photo, is_admin, created_by, created_at)
-            VALUES (:full_name, :birth_year, :gender, :photo, :is_admin, :created_by, NOW())
+            INSERT INTO users (full_name, email, password, birth_year, gender, photo, is_admin, created_by, created_at)
+            VALUES (:full_name, :email, :password, :birth_year, :gender, :photo, :is_admin, :created_by, NOW())
         ");
 
         $stmt->execute([
             ':full_name'  => $data['full_name'],
+            ':email'      => $data['email'],
+            ':password'   => $data['password'],
             ':birth_year' => $data['birth_year'],
             ':gender'     => $data['gender'],
             ':photo'      => $data['photo'],

@@ -5,6 +5,7 @@ use Dotenv\Dotenv;
 require __DIR__ . '/../vendor/autoload.php';
 
 require __DIR__ . '/../routes/web.php';
+require __DIR__ . '/../routes/api.php';
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();

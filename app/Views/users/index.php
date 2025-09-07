@@ -55,6 +55,16 @@
                     <div class="invalid-feedback"></div>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Почта</label>
+                    <input type="text" name="email" class="form-control">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Пароль</label>
+                    <input type="text" name="password" class="form-control">
+                    <div class="invalid-feedback"></div>
+                </div>
+                <div class="mb-3">
                     <label class="form-label">Год рождения</label>
                     <input type="number" name="birth_year" class="form-control">
                     <div class="invalid-feedback"></div>
@@ -97,7 +107,7 @@
         form.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
 
         try {
-            const response = await fetch('/users', {
+            const response = await fetch('/api/users', {
                 method: 'POST',
                 body: formData,
             });

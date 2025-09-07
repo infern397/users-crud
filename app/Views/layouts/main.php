@@ -16,11 +16,13 @@
 <div class="container">
     <header class="py-2 d-flex justify-content-between align-items-center">
         <div class="col">
-            <h1>Users CRUD</h1>
+            <a href="/" class="text-decoration-none text-dark">
+                <h1>Users CRUD</h1>
+            </a>
         </div>
         <div class="col text-end">
-            <button type="button" class="btn btn-outline-primary me-2">Login</button>
-            <button type="button" class="btn btn-primary">Sign-up</button>
+            <a href="login" class="btn btn-outline-primary me-2">Войти</a>
+            <a href="/register" class="btn btn-primary">Зарегистрироваться</a>
         </div>
     </header>
 

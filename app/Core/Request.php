@@ -64,16 +64,28 @@ class Request
             $value = $this->input($field);
 
             foreach ($validators as $validator) {
+                $param = null;
+
+                if (str_contains($validator, ':')) {
+                    [$validator, $param] = explode(':', $validator, 2);
+                }
+
                 $method = "validate" . ucfirst($validator);
                 if (!method_exists($this, $method)) {
                     throw new RuntimeException("Validator $validator not implemented");
                 }
-                $this->$method($field, $value);
+
+                if ($param !== null) {
+                    $this->$method($field, $value, $param);
+                } else {
+                    $this->$method($field, $value);
+                }
             }
         }
 
         return empty($this->errors);
     }
+
 
     public function errors(): array
     {
@@ -98,6 +110,20 @@ class Request
     {
         if (!in_array($value, [0, 1, true, false, "0", "1"], true)) {
             $this->errors[$field][] = "Поле $field должно быть булевым";
+        }
+    }
+
+    protected function validateEmail(string $field, $value): void
+    {
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            $this->errors[$field][] = "Поле $field должно быть корректным email";
+        }
+    }
+
+    protected function validateMinLength(string $field, $value, int $min): void
+    {
+        if (strlen((string)$value) < $min) {
+            $this->errors[$field][] = "Поле $field должно быть не менее $min символов";
         }
     }
 
