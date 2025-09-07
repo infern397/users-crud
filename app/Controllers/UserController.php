@@ -3,12 +3,25 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Storage;
+use App\Models\User;
+use App\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
+    private Storage $storage;
+
+    public function __construct()
+    {
+        $this->storage = new Storage(__DIR__ . '/../../public/uploads');
+    }
+
     public function index(): void
     {
-        $this->render('users/index', ['message' => 'Welcome to the User Index Page!']);
+        $users = User::all();
+        $this->render('users/index', [
+            'users' => $users,
+        ]);
     }
 
     public function show(int $id): void
@@ -18,6 +31,20 @@ class UserController extends Controller
 
     public function store(): void
     {
-        echo "Store new user";
+        $request = new StoreUserRequest();
+
+        if (!$request->validate()) {
+            $this->json(['errors' => $request->errors()], 422);
+        }
+
+        $data = $request->data();
+
+        if ($data['photo']) {
+            $data['photo'] = $this->storage->save($data('photo'));
+        }
+
+        User::create($data);
+
+        $this->json(['message' => 'User created successfully'], 201);
     }
 }
