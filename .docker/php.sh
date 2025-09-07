@@ -1,0 +1,1 @@
+sudo docker exec -i -t "users_crud-php-1" /bin/sh

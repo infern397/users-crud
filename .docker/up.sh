@@ -1,1 +1,1 @@
-sudo docker compose --env-file ../.env --project-name "users_crud" up -d
+sudo docker compose --env-file ../.env --project-name "users_crud" up -d --build

@@ -1,0 +1,1 @@
+sudo docker exec -i -t "users_crud-mysql-1" /bin/bash

@@ -1,9 +1,13 @@
 <?php
 use App\Core\Router;
+use Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 require __DIR__ . '/../routes/web.php';
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 try {
     Router::getInstance()->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
