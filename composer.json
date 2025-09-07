@@ -1,0 +1,11 @@
+{
+  "name": "test/users-crud",
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  },
+  "require": {
+
+  }
+}
