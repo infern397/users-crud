@@ -1,0 +1,1 @@
+sudo docker compose --project-name "users_crud" down
