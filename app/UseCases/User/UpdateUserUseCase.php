@@ -1,20 +1,21 @@
 <?php
 
-namespace App\UseCases\Auth;
+namespace App\UseCases\User;
 
-use App\Core\Session;
 use App\Core\Storage;
 use App\Exceptions\UserAlreadyExistsException;
 use App\Models\User;
 
-class RegisterUseCase
+class UpdateUserUseCase
 {
     /**
      * @throws UserAlreadyExistsException
      */
-    public static function execute(array $data): void
+    public static function execute(int $id, array $data): User
     {
-        if (User::findByEmail($data['email'])) {
+        $user = User::findByEmail($data['email']);
+
+        if ($user && $user->id != $id) {
             throw new UserAlreadyExistsException();
         }
 
@@ -22,11 +23,9 @@ class RegisterUseCase
             $data['photo'] = new Storage(BASE_PATH . '/public/uploads')->save($data['photo']);
         }
 
-        $data['created_by'] = null;
-
-        $user = new User($data);
+        $user->fill($data);
         $user->save();
 
-        Session::set('user_id', $user->id);
+        return $user;
     }
 }

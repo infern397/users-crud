@@ -25,7 +25,7 @@ class UpdateUserRequest extends Request
             'birth_year' => (int)$this->input('birth_year'),
             'gender'     => $this->input('gender'),
             'is_admin'   => $this->input('is_admin') ? 1 : 0,
-            'photo'      => $this->hasFile('photo') ? null : $this->file('photo'),
+            'photo'      => $this->hasFile('photo') ? $this->file('photo') : null,
         ];
     }
 }

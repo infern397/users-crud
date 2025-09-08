@@ -4,20 +4,14 @@ namespace App\Controllers\Api;
 
 use App\Core\Controller;
 use App\Core\Storage;
-use App\Core\UserContext;
-use App\Models\User;
+use App\Exceptions\UserAlreadyExistsException;
 use App\Requests\StoreUserRequest;
 use App\Requests\UpdateUserRequest;
+use App\UseCases\User\CreateUserUseCase;
+use App\UseCases\User\UpdateUserUseCase;
 
 class UserController extends Controller
 {
-    private Storage $storage;
-
-    public function __construct()
-    {
-        $this->storage = new Storage(BASE_PATH . '/public/uploads');
-    }
-
     public function store(): void
     {
         $request = new StoreUserRequest();
@@ -28,20 +22,13 @@ class UserController extends Controller
 
         $data = $request->data();
 
-        if (User::findByEmail($data['email'])) {
-            $this->json(['errors' => ['email' => ['Email уже используется']]], 422);
+        try {
+            CreateUserUseCase::execute($data);
+        } catch (UserAlreadyExistsException) {
+            $this->json(['errors' => ['email' => ['Пользователь с таким email уже существует']]], 422);
         }
 
-        if ($data['photo']) {
-            $data['photo'] = $this->storage->save($data('photo'));
-        }
-
-        $data['created_by'] = UserContext::id();
-
-        $user = new User($data);
-        $user->save();
-
-        $this->json(['message' => 'User created successfully'], 201);
+        $this->json(['message' => 'Пользователь успешно создан'], 201);
     }
 
     public function update(int $id): void
@@ -54,18 +41,11 @@ class UserController extends Controller
 
         $data = $request->data();
 
-        $user = User::findByEmail($data['email']);
-
-        if ($user && $user->id != $id) {
-            $this->json(['errors' => ['email' => ['Email уже используется']]], 422);
+        try {
+            UpdateUserUseCase::execute($id, $data);
+        } catch (UserAlreadyExistsException) {
+            $this->json(['errors' => ['email' => ['Пользователь с таким email уже существует']]], 422);
         }
-
-        if ($data['photo']) {
-            $data['photo'] = $this->storage->save($data('photo'));
-        }
-
-        $user->fill($data);
-        $user->save();
 
         $this->json(['message' => 'Пользователь обновлён']);
     }
