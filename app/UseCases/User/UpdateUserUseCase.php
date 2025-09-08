@@ -20,7 +20,12 @@ class UpdateUserUseCase
         }
 
         if ($data['photo']) {
-            $data['photo'] = new Storage(BASE_PATH . '/public/uploads')->save($data['photo']);
+            $storage = new Storage(BASE_PATH . '/public/uploads');
+
+            $storage->delete($user->photo);
+            $data['photo'] = $storage->save($data['photo']);
+        } else {
+            $data['photo'] = User::find($id)->photo;
         }
 
         $user->fill($data);
