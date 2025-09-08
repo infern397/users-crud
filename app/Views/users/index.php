@@ -45,13 +45,18 @@ use App\Models\User;
                 <?php endif; ?>
             </td>
             <?php if (UserContext::user()->is_admin): ?>
-            <td>
-                <button
-                        class="btn btn-sm btn-warning editUserBtn"
-                        data-user='<?= json_encode($u->getAttributes(), JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
-                    Редактировать
-                </button>
-            </td>
+                <td>
+                    <button
+                            class="btn btn-sm btn-warning editUserBtn"
+                            data-user='<?= json_encode($u->getAttributes(), JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
+                        Редактировать
+                    </button>
+                    <button
+                            class="btn btn-sm btn-danger deleteUserBtn"
+                            data-user-id="<?= htmlspecialchars($u->id) ?>">
+                        Удалить
+                    </button>
+                </td>
             <?php endif ?>
         </tr>
     <?php endforeach; ?>
@@ -59,6 +64,26 @@ use App\Models\User;
 </table>
 
 <?php
-    $this->renderPartial('users/create');
-    $this->renderPartial('users/edit');
+$this->renderPartial('users/create');
+$this->renderPartial('users/edit');
 ?>
+
+<script>
+    document.querySelector('table').addEventListener('click', async function (event) {
+        const button = event.target.closest('.deleteUserBtn');
+        if (!button) return;
+
+        const userId = button.getAttribute('data-user-id');
+        const response = await fetch(`/api/users/${userId}/delete`, {
+            method: 'POST',
+        });
+
+        const data = response.json();
+
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert(data.message || 'Ошибка');
+        }
+    });
+</script>

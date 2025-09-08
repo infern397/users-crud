@@ -73,7 +73,7 @@
         formData.set('is_admin', form.is_admin.checked ? '1' : '0');
 
         try {
-            const response = await fetch(`/api/users/${id}`, {
+            const response = await fetch(`/api/users/${id}/update`, {
                 method: 'POST',
                 body: formData,
             });

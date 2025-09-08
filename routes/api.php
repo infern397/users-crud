@@ -9,7 +9,8 @@ use App\Middlewares\AuthMiddleware;
 $router = Router::getInstance();
 
 $router->post('/api/users', [UserController::class, 'store'])->middleware([AuthMiddleware::class]);
-$router->post('/api/users/{id}', [UserController::class, 'update'])->middleware([AuthMiddleware::class, AdminMiddleware::class]);
+$router->post('/api/users/{id}/update', [UserController::class, 'update'])->middleware([AuthMiddleware::class, AdminMiddleware::class]);
+$router->post('/api/users/{id}/delete', [UserController::class, 'delete'])->middleware([AuthMiddleware::class, AdminMiddleware::class]);
 
 $router->post('/api/auth/login', [AuthController::class, 'login']);
 $router->post('/api/auth/register', [AuthController::class, 'register']);

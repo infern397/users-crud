@@ -3,11 +3,12 @@
 namespace App\Controllers\Api;
 
 use App\Core\Controller;
-use App\Core\Storage;
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UserAlreadyExistsException;
 use App\Requests\StoreUserRequest;
 use App\Requests\UpdateUserRequest;
 use App\UseCases\User\CreateUserUseCase;
+use App\UseCases\User\DeleteUserUseCase;
 use App\UseCases\User\UpdateUserUseCase;
 
 class UserController extends Controller
@@ -48,5 +49,16 @@ class UserController extends Controller
         }
 
         $this->json(['message' => 'Пользователь обновлён']);
+    }
+
+    public function delete(int $id): void
+    {
+        try {
+            DeleteUserUseCase::execute($id);
+        } catch (EntityNotFoundException) {
+            $this->json(['message' => 'Пользователь не найден'], 404);
+        }
+
+        $this->json(['message' => 'Пользователь удалён']);
     }
 }
