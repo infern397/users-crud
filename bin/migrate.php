@@ -1,15 +1,15 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require BASE_PATH . '/vendor/autoload.php';
 
 use App\Core\Database;
 use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv = Dotenv::createImmutable(BASE_PATH);
 $dotenv->load();
 
 $pdo = Database::getInstance();
-$migrations = glob(__DIR__ . '/../database/migrations/*.php');
+$migrations = glob(BASE_PATH . '/database/migrations/*.php');
 
 foreach ($migrations as $file) {
     $sql = require $file;

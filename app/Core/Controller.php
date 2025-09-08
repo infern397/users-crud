@@ -9,10 +9,15 @@ class Controller
         extract($params);
 
         ob_start();
-        require __DIR__ . "/../Views/{$view}.php";
+        require BASE_PATH . "/app/Views/$view.php";
         $content = ob_get_clean();
+        require BASE_PATH . "/app/Views/layouts/$layout.php";
+    }
 
-        require __DIR__ . "/../Views/layouts/$layout.php";
+    protected function renderPartial(string $view, array $params = []): void
+    {
+        extract($params);
+        require BASE_PATH . "/app/Views/$view.php";
     }
 
     protected function json($data, int $status = 200): void

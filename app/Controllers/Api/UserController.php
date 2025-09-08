@@ -15,7 +15,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->storage = new Storage(__DIR__ . '/../../../public/uploads');
+        $this->storage = new Storage(BASE_PATH . '/public/uploads');
     }
 
     public function store(): void
@@ -27,6 +27,10 @@ class UserController extends Controller
         }
 
         $data = $request->data();
+
+        if (User::findByEmail($data['email'])) {
+            $this->json(['errors' => ['email' => ['Email уже используется']]], 422);
+        }
 
         if ($data['photo']) {
             $data['photo'] = $this->storage->save($data('photo'));
@@ -48,6 +52,12 @@ class UserController extends Controller
         }
 
         $data = $request->data();
+
+        $user = User::findByEmail($data['email']);
+
+        if ($user && $user['id'] != $id) {
+            $this->json(['errors' => ['email' => ['Email уже используется']]], 422);
+        }
 
         if ($data['photo']) {
             $data['photo'] = $this->storage->save($data('photo'));

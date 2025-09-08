@@ -3,12 +3,14 @@ use App\Core\Router;
 use App\Core\UserContext;
 use Dotenv\Dotenv;
 
-require __DIR__ . '/../vendor/autoload.php';
+define('BASE_PATH', dirname(__DIR__));
 
-require __DIR__ . '/../routes/web.php';
-require __DIR__ . '/../routes/api.php';
+require BASE_PATH . '/vendor/autoload.php';
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+require BASE_PATH . '/routes/web.php';
+require BASE_PATH . '/routes/api.php';
+
+$dotenv = Dotenv::createImmutable(BASE_PATH);
 $dotenv->load();
 
 UserContext::load();

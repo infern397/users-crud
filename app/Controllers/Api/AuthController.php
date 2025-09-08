@@ -15,7 +15,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->storage = new Storage(__DIR__ . '/../../../public/uploads');
+        $this->storage = new Storage(BASE_PATH . '/public/uploads');
     }
 
     public function login(): void
