@@ -43,16 +43,6 @@ class Router
         return $this->add('POST', $path, $handler);
     }
 
-    public function put(string $path, callable|array $handler): RouteDefinition
-    {
-        return $this->add('PUT', $path, $handler);
-    }
-
-    public function delete(string $path, callable|array $handler): RouteDefinition
-    {
-        return $this->add('DELETE', $path, $handler);
-    }
-
     /**
      * @throws Exception
      */

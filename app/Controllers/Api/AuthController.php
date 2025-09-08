@@ -58,6 +58,8 @@ class AuthController extends Controller
             $data['photo'] = $this->storage->save($data('photo'));
         }
 
+        $data['created_by'] = null;
+
         $userId = User::create($data);
 
         Session::set('user_id', $userId);

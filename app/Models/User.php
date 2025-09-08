@@ -18,13 +18,13 @@ class User extends Model
         ");
 
         $stmt->execute([
-            ':full_name'  => $data['full_name'],
-            ':email'      => $data['email'],
-            ':password'   => $data['password'],
+            ':full_name' => $data['full_name'],
+            ':email' => $data['email'],
+            ':password' => $data['password'],
             ':birth_year' => $data['birth_year'],
-            ':gender'     => $data['gender'],
-            ':photo'      => $data['photo'],
-            ':is_admin'   => $data['is_admin'],
+            ':gender' => $data['gender'],
+            ':photo' => $data['photo'],
+            ':is_admin' => $data['is_admin'],
             ':created_by' => $data['created_by'],
         ]);
 
@@ -37,5 +37,29 @@ class User extends Model
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
         $stmt->execute(['email' => $email]);
         return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+    }
+
+    public static function update(int $id, array $data): void
+    {
+        $pdo = Database::getInstance();
+        $stmt = $pdo->prepare("
+            UPDATE users SET
+                full_name = :full_name,
+                email = :email,
+                birth_year = :birth_year,
+                gender = :gender,
+                photo = :photo,
+                is_admin = :is_admin
+            WHERE id = :id
+        ");
+        $stmt->execute([
+            ':full_name' => $data['full_name'],
+            ':email' => $data['email'],
+            ':birth_year' => $data['birth_year'],
+            ':gender' => $data['gender'],
+            ':photo' => $data['photo'],
+            ':is_admin' => $data['is_admin'],
+            ':id' => $id,
+        ]);
     }
 }
