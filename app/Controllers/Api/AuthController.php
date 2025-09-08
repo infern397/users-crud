@@ -3,21 +3,15 @@
 namespace App\Controllers\Api;
 
 use App\Core\Controller;
-use App\Core\Session;
-use App\Core\Storage;
-use App\Models\User;
+use App\Exceptions\AuthenticationException;
+use App\Exceptions\UserAlreadyExistsException;
 use App\Requests\LoginRequest;
 use App\Requests\StoreUserRequest;
+use App\UseCases\Auth\LoginUseCase;
+use App\UseCases\Auth\RegisterUseCase;
 
 class AuthController extends Controller
 {
-    private Storage $storage;
-
-    public function __construct()
-    {
-        $this->storage = new Storage(BASE_PATH . '/public/uploads');
-    }
-
     public function login(): void
     {
         $request = new LoginRequest();
@@ -29,13 +23,11 @@ class AuthController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $user = User::findByEmail($email);
-
-        if (!$user || !password_verify($password, $user->password)) {
+        try {
+            LoginUseCase::execute($email, $password);
+        } catch (AuthenticationException) {
             $this->json(['errors' => ['email' => ['Неверный email или пароль']]], 422);
         }
-
-        Session::set('user_id', $user->id);
 
         $this->json(['message' => 'Успешный вход']);
     }
@@ -48,22 +40,11 @@ class AuthController extends Controller
             $this->json(['errors' => $request->errors()], 422);
         }
 
-        $data = $request->data();
-
-        if (User::findByEmail($data['email'])) {
+        try {
+            RegisterUseCase::execute($request->data());
+        } catch (UserAlreadyExistsException) {
             $this->json(['errors' => ['email' => ['Пользователь с таким email уже существует']]], 422);
         }
-
-        if ($data['photo']) {
-            $data['photo'] = $this->storage->save($data('photo'));
-        }
-
-        $data['created_by'] = null;
-
-        $user = new User($data);
-        $user->save();
-
-        Session::set('user_id', $user->id);
 
         $this->json(['message' => 'Регистрация прошла успешно'], 201);
     }

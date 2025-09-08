@@ -14,9 +14,4 @@ class UserController extends Controller
             'users' => $users,
         ]);
     }
-
-    public function show(int $id): void
-    {
-        echo "User details for ID = {$id}";
-    }
 }
