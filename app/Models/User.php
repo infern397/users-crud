@@ -5,6 +5,18 @@ namespace App\Models;
 use App\Core\Database;
 use App\Core\Model;
 
+/**
+ * @property int $id
+ * @property string $full_name
+ * @property string $email
+ * @property string $password
+ * @property int $birth_year
+ * @property string $gender
+ * @property string $photo
+ * @property bool $is_admin
+ * @property int $created_by
+ * @property string $created_at
+ */
 class User extends Model
 {
     protected static string $table = 'users';
@@ -31,35 +43,13 @@ class User extends Model
         return (int)$pdo->lastInsertId();
     }
 
-    public static function findByEmail(string $email): ?array
+    public static function findByEmail(string $email): ?self
     {
         $pdo = Database::getInstance();
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
         $stmt->execute(['email' => $email]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
-    }
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
 
-    public static function update(int $id, array $data): void
-    {
-        $pdo = Database::getInstance();
-        $stmt = $pdo->prepare("
-            UPDATE users SET
-                full_name = :full_name,
-                email = :email,
-                birth_year = :birth_year,
-                gender = :gender,
-                photo = :photo,
-                is_admin = :is_admin
-            WHERE id = :id
-        ");
-        $stmt->execute([
-            ':full_name' => $data['full_name'],
-            ':email' => $data['email'],
-            ':birth_year' => $data['birth_year'],
-            ':gender' => $data['gender'],
-            ':photo' => $data['photo'],
-            ':is_admin' => $data['is_admin'],
-            ':id' => $id,
-        ]);
+        return $data ? new self($data) : null;
     }
 }

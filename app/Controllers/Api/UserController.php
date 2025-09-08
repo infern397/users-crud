@@ -38,7 +38,8 @@ class UserController extends Controller
 
         $data['created_by'] = UserContext::id();
 
-        User::create($data);
+        $user = new User($data);
+        $user->save();
 
         $this->json(['message' => 'User created successfully'], 201);
     }
@@ -55,7 +56,7 @@ class UserController extends Controller
 
         $user = User::findByEmail($data['email']);
 
-        if ($user && $user['id'] != $id) {
+        if ($user && $user->id != $id) {
             $this->json(['errors' => ['email' => ['Email уже используется']]], 422);
         }
 
@@ -63,7 +64,8 @@ class UserController extends Controller
             $data['photo'] = $this->storage->save($data('photo'));
         }
 
-        User::update($id, $data);
+        $user->fill($data);
+        $user->save();
 
         $this->json(['message' => 'Пользователь обновлён']);
     }

@@ -12,7 +12,7 @@ class AdminMiddleware extends Middleware
     {
         $user = UserContext::user();
 
-        $isAdmin = $user && $user['is_admin'] ?? false;
+        $isAdmin = $user && $user->is_admin ?? false;
 
         if (!$isAdmin) {
             http_response_code(403);

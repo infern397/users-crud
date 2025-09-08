@@ -6,7 +6,7 @@ use App\Models\User;
 
 class UserContext
 {
-    private static ?array $user = null;
+    private static ?User $user = null;
 
     public static function load(): void
     {
@@ -16,7 +16,7 @@ class UserContext
         }
     }
 
-    public static function user(): ?array
+    public static function user(): ?User
     {
         return self::$user;
     }
@@ -28,7 +28,7 @@ class UserContext
 
     public static function id(): ?int
     {
-        return self::$user['id'] ?? null;
+        return self::$user->id ?? null;
     }
 
     public static function logout(): void

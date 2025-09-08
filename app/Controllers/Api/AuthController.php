@@ -31,11 +31,11 @@ class AuthController extends Controller
 
         $user = User::findByEmail($email);
 
-        if (!$user || !password_verify($password, $user['password'])) {
+        if (!$user || !password_verify($password, $user->password)) {
             $this->json(['errors' => ['email' => ['Неверный email или пароль']]], 422);
         }
 
-        Session::set('user_id', $user['id']);
+        Session::set('user_id', $user->id);
 
         $this->json(['message' => 'Успешный вход']);
     }
@@ -60,9 +60,10 @@ class AuthController extends Controller
 
         $data['created_by'] = null;
 
-        $userId = User::create($data);
+        $user = new User($data);
+        $user->save();
 
-        Session::set('user_id', $userId);
+        Session::set('user_id', $user->id);
 
         $this->json(['message' => 'Регистрация прошла успешно'], 201);
     }
