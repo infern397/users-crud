@@ -9,12 +9,13 @@ class StoreUserRequest extends Request
     protected function rules(): array
     {
         return [
-            'full_name'  => ['required'],
-            'email'      => ['required', 'email'],
-            'password'   => ['required', 'minLength:6'],
-            'birth_year' => ['required', 'integer'],
+            'full_name'  => ['required', 'maxLength:255'],
+            'email'      => ['required', 'email', 'maxLength:255'],
+            'password'   => ['required', 'minLength:6', 'maxLength:255'],
+            'birth_year' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
             'gender'     => ['required'],
             'is_admin'   => ['boolean'],
+            'photo'      => ['image'],
         ];
     }
 

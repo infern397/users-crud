@@ -9,8 +9,8 @@ class LoginRequest extends Request
     protected function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
-            'password' => ['required', 'minLength:6'],
+            'email' => ['required', 'email', 'maxLength:255'],
+            'password' => ['required', 'minLength:6', 'maxLength:255'],
         ];
     }
 

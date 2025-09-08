@@ -127,6 +127,41 @@ class Request
         }
     }
 
+    protected function validateMaxLength(string $field, $value, int $max): void
+    {
+        if (strlen((string)$value) > $max) {
+            $this->errors[$field][] = "Поле $field должно быть не более $max символов";
+        }
+    }
+
+    protected function validateMin(string $field, $value, float $min): void
+    {
+        if (!is_numeric($value) || $value < $min) {
+            $this->errors[$field][] = "Поле $field должно быть не менее $min";
+        }
+    }
+
+    protected function validateMax(string $field, $value, float $max): void
+    {
+        if (!is_numeric($value) || $value > $max) {
+            $this->errors[$field][] = "Поле $field должно быть не более $max";
+        }
+    }
+
+    protected function validateImage(string $field, $value): void
+    {
+        if (!$this->hasFile($field)) {
+            return;
+        }
+
+        $file = $this->file($field);
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+        if (!in_array($file['type'], $allowedTypes, true)) {
+            $this->errors[$field][] = "Поле $field должно быть изображением (jpeg, png, gif)";
+        }
+    }
+
     protected function rules(): array
     {
         return [];
