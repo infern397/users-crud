@@ -1,5 +1,6 @@
 <?php
 use App\Core\Router;
+use App\Core\UserContext;
 use Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -9,6 +10,8 @@ require __DIR__ . '/../routes/api.php';
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
+
+UserContext::load();
 
 try {
     Router::getInstance()->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);

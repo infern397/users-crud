@@ -30,4 +30,12 @@ class User extends Model
 
         return (int)$pdo->lastInsertId();
     }
+
+    public static function findByEmail(string $email): ?array
+    {
+        $pdo = Database::getInstance();
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
+    }
 }

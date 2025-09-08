@@ -7,6 +7,7 @@ use Exception;
 class Router
 {
     private static ?Router $instance = null;
+    /** @var array<RouteDefinition[]> */
     private array $routes = [];
 
     private function __construct() {}
@@ -21,34 +22,35 @@ class Router
         return self::$instance;
     }
 
-    public function add(string $method, string $path, callable|array $handler): void
+    public function add(string $method, string $path, callable|array $handler): RouteDefinition
     {
         $method = strtoupper($method);
-        $this->routes[$method][] = [
-            'path' => $path,
-            'handler' => $handler,
-            'regex' => $this->convertPathToRegex($path),
-        ];
+
+        $definition = new RouteDefinition($method, $path, $handler);
+
+        $this->routes[$method][] = $definition;
+
+        return $definition;
     }
 
-    public function get(string $path, callable|array $handler): void
+    public function get(string $path, callable|array $handler): RouteDefinition
     {
-        $this->add('GET', $path, $handler);
+        return $this->add('GET', $path, $handler);
     }
 
-    public function post(string $path, callable|array $handler): void
+    public function post(string $path, callable|array $handler): RouteDefinition
     {
-        $this->add('POST', $path, $handler);
+        return $this->add('POST', $path, $handler);
     }
 
-    public function put(string $path, callable|array $handler): void
+    public function put(string $path, callable|array $handler): RouteDefinition
     {
-        $this->add('PUT', $path, $handler);
+        return $this->add('PUT', $path, $handler);
     }
 
-    public function delete(string $path, callable|array $handler): void
+    public function delete(string $path, callable|array $handler): RouteDefinition
     {
-        $this->add('DELETE', $path, $handler);
+        return $this->add('DELETE', $path, $handler);
     }
 
     /**
@@ -64,10 +66,26 @@ class Router
         }
 
         foreach ($this->routes[$method] as $route) {
-            if (preg_match($route['regex'], $path, $matches)) {
+            if (preg_match($route->getRegex(), $path, $matches)) {
                 array_shift($matches);
 
-                $handler = $route['handler'];
+                $request = new Request();
+
+                foreach ($route->getMiddleware() as $middlewareClass) {
+                    if (!class_exists($middlewareClass)) {
+                        throw new Exception("Middleware $middlewareClass not found");
+                    }
+
+                    $middleware = new $middlewareClass();
+                    if (!$middleware instanceof Middleware) {
+                        throw new Exception("$middlewareClass must extend App\Core\Middleware");
+                    }
+
+                    $middleware->handle($request);
+                }
+
+                $handler = $route->getHandler();
+
                 if (is_array($handler)) {
                     [$class, $action] = $handler;
                     if (!class_exists($class)) {
@@ -85,11 +103,5 @@ class Router
         }
 
         throw new Exception("Route not found: [$method] $path", 404);
-    }
-
-    private function convertPathToRegex(string $path): string
-    {
-        $regex = preg_replace('#\{[^/]+}#', '([^/]+)', $path);
-        return '#^' . $regex . '$#';
     }
 }

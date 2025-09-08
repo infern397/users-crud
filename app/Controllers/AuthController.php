@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\UserContext;
 
 class AuthController extends Controller
 {
@@ -14,5 +15,11 @@ class AuthController extends Controller
     public function register(): void
     {
         $this->render('auth/register');
+    }
+
+    public function logout(): void
+    {
+        UserContext::logout();
+        $this->redirect('/login');
     }
 }

@@ -1,4 +1,6 @@
 <?php
+use App\Core\UserContext;
+
 /**
  * @var string $content
  */
@@ -21,8 +23,12 @@
             </a>
         </div>
         <div class="col text-end">
-            <a href="login" class="btn btn-outline-primary me-2">Войти</a>
-            <a href="/register" class="btn btn-primary">Зарегистрироваться</a>
+            <?php if (UserContext::check()): ?>
+                <a href="/logout" class="btn btn-danger">Выйти</a>
+            <?php else: ?>
+                <a href="/login" class="btn btn-outline-primary me-2">Войти</a>
+                <a href="/register" class="btn btn-primary">Зарегистрироваться</a>
+            <?php endif; ?>
         </div>
     </header>
 
