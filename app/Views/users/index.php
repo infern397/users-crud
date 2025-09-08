@@ -20,7 +20,7 @@ use App\Models\User;
 <table class="table table-bordered">
     <thead>
     <tr>
-        <th>ID</th>
+        <th class="text-center">ID</th>
         <th>ФИО</th>
         <th>Год рождения</th>
         <th>Пол</th>
@@ -34,18 +34,18 @@ use App\Models\User;
     <tbody>
     <?php foreach ($users as $u): ?>
         <tr>
-            <td><?= htmlspecialchars($u->id) ?></td>
+            <td class="text-center"><?= htmlspecialchars($u->id) ?></td>
             <td><?= htmlspecialchars($u->full_name) ?></td>
             <td><?= htmlspecialchars($u->birth_year) ?></td>
-            <td><?= $u->gender === 'male' ? 'Мужчина' : 'Женщина' ?></td>
+            <td><?= $u->gender === 'male' ? 'М' : 'Ж' ?></td>
             <td><?= $u->is_admin ? 'Да' : 'Нет' ?></td>
-            <td>
+            <td class="text-center">
                 <?php if ($u->photo): ?>
                     <img src="/uploads/<?= htmlspecialchars($u->photo) ?>" alt="Фото" width="50">
                 <?php endif; ?>
             </td>
             <?php if (UserContext::user()->is_admin): ?>
-                <td>
+                <td class="text-end">
                     <button
                             class="btn btn-sm btn-warning editUserBtn"
                             data-user='<?= json_encode($u->getAttributes(), JSON_HEX_APOS | JSON_HEX_QUOT) ?>'>
